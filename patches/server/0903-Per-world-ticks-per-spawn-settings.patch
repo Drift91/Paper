@@ -1,0 +1,54 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jake Potrebic <jake.m.potrebic@gmail.com>
+Date: Sat, 13 Nov 2021 12:36:26 -0800
+Subject: [PATCH] Per world ticks per spawn settings
+
+
+diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+index ad3f0ff353a0448babde334641d1b1ac94779b07..86526bb8a6421a56c600236da6f0101d2e40b3cb 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
++++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
+@@ -753,6 +753,14 @@ public class PaperWorldConfig {
+         }
+     }
+ 
++    public Reference2IntMap<MobCategory> perWorldTicksPerSpawns = new Reference2IntOpenHashMap<>(net.minecraft.world.level.NaturalSpawner.SPAWNING_CATEGORIES.length);
++    private void setPerWorldTicksPerSpawns() {
++        this.perWorldTicksPerSpawns.defaultReturnValue(-1);
++        for (final MobCategory category : net.minecraft.world.level.NaturalSpawner.SPAWNING_CATEGORIES) {
++            this.perWorldTicksPerSpawns.put(category, getInt("ticks-per-spawn." + category.getName(), this.perWorldTicksPerSpawns.getInt(category)));
++        }
++    }
++
+     public int lightQueueSize = 20;
+     private void lightQueueSize() {
+         lightQueueSize = getInt("light-queue-size", lightQueueSize);
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index 160c0f37aa3aaf7598f852acf9bd444f79444c97..cb737e10f08620e1e2a6bd52d2c6401c47a6fd6f 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -258,6 +258,15 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         return this.getNearestPlayer(null, d0, d1, d2, d3, predicate);
+     }
+     // Paper end - optimise checkDespawn
++    // Paper start - per world ticks per spawn
++    private int getTicksPerSpawn(SpawnCategory spawnCategory) {
++        final int perWorld = this.paperConfig.perWorldTicksPerSpawns.getInt(CraftSpawnCategory.toNMS(spawnCategory));
++        if (perWorld >= 0) {
++            return perWorld;
++        }
++        return this.getCraftServer().getTicksPerSpawns(spawnCategory);
++    }
++    // Paper end
+ 
+     public abstract ResourceKey<LevelStem> getTypeKey();
+ 
+@@ -270,7 +279,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         // CraftBukkit Ticks things
+         for (SpawnCategory spawnCategory : SpawnCategory.values()) {
+             if (CraftSpawnCategory.isValidForLimits(spawnCategory)) {
+-                this.ticksPerSpawnCategory.put(spawnCategory, (long) this.getCraftServer().getTicksPerSpawns(spawnCategory));
++                this.ticksPerSpawnCategory.put(spawnCategory, this.getTicksPerSpawn(spawnCategory)); // Paper
+             }
+         }
+ 
