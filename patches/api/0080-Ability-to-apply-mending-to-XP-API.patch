@@ -10,10 +10,10 @@ of giving the player experience points.
 Both an API To standalone mend, and apply mending logic to .giveExp has been added.
 
 diff --git a/src/main/java/org/bukkit/entity/Player.java b/src/main/java/org/bukkit/entity/Player.java
-index 9bbf1a9f3b848c26deac34435e71dd8558a80afd..1885a21b888b0a950a1f32bd587e6621522faef7 100644
+index 204c337558e84304de4f511473be8cccb2a8cd4f..cb7bce8072dfcccfc3aba8f85d7d722faf560a55 100644
 --- a/src/main/java/org/bukkit/entity/Player.java
 +++ b/src/main/java/org/bukkit/entity/Player.java
-@@ -1011,12 +1011,33 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
+@@ -1021,12 +1021,33 @@ public interface Player extends HumanEntity, Conversable, OfflinePlayer, PluginM
       */
      public void resetPlayerWeather();
  

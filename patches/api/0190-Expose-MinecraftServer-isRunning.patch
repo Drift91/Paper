@@ -6,10 +6,10 @@ Subject: [PATCH] Expose MinecraftServer#isRunning
 This allows for plugins to detect if the server is actually turning off in onDisable rather than just plugins reloading.
 
 diff --git a/src/main/java/org/bukkit/Bukkit.java b/src/main/java/org/bukkit/Bukkit.java
-index c277b48d45c7aab3b727a7019b3ef253e045629d..c043e6798314e322e32a1c8e8ef6a795e022b858 100644
+index c1e1a311ea5fb4826f6b400b098262e177e22318..96f1619a188d569398bbc2bb8ff0b4bd8f08f825 100644
 --- a/src/main/java/org/bukkit/Bukkit.java
 +++ b/src/main/java/org/bukkit/Bukkit.java
-@@ -2055,6 +2055,15 @@ public final class Bukkit {
+@@ -2219,6 +2219,15 @@ public final class Bukkit {
      public static int getCurrentTick() {
          return server.getCurrentTick();
      }
@@ -26,10 +26,10 @@ index c277b48d45c7aab3b727a7019b3ef253e045629d..c043e6798314e322e32a1c8e8ef6a795
  
      @NotNull
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 38febebef94652a9e44475560974d6e8d6949db0..ad940c5d327c7e1e09aea7d2cee27a8abcf3fed7 100644
+index c437c7f95d642e2816c30ed43492a70c1735f80a..86556846d4daa60ada23043993ab76d7b3a8fa47 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -1801,5 +1801,12 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -1952,5 +1952,12 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
       * @return Current tick
       */
      int getCurrentTick();
